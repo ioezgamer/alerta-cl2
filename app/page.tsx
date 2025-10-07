@@ -9,6 +9,7 @@ import {
   signInAnonymously,
   signInWithCustomToken,
 } from "firebase/auth";
+import type { Firestore } from "firebase/firestore";
 import {
   getFirestore,
   collection,
@@ -95,8 +96,9 @@ export default function AlertaClimaPage() {
       return;
     }
 
+    const dbRef = db as Firestore;
     const reportsCollection = collection(
-      db,
+      dbRef,
       `/artifacts/${appId}/public/data/reports`
     );
     const q = query(reportsCollection, orderBy("timestamp", "desc"));
@@ -174,8 +176,13 @@ export default function AlertaClimaPage() {
     setIsSubmitting(true);
 
     try {
+      if (!db) {
+        showNotification("Firebase no está configurado.", "error");
+        return;
+      }
+      const dbRef = db as Firestore;
       const reportsCollection = collection(
-        db,
+        dbRef,
         `/artifacts/${appId}/public/data/reports`
       );
       await addDoc(reportsCollection, {
