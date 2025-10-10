@@ -28,7 +28,7 @@ type Report = {
   community: string;
   reporter: string;
   conditions: string[];
-  intensity: "poca" | "moderada" | "mucha" | "fuerte";
+  intensity: string;
   description: string;
   timestamp: Timestamp | null;
 };
@@ -83,7 +83,7 @@ export default function AlertaClimaPage() {
     community: "",
     reporter: "",
     conditions: new Set<string>(),
-    intensity: "leve",
+    intensity: "",
     description: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -201,7 +201,7 @@ export default function AlertaClimaPage() {
         community: "",
         reporter: "",
         conditions: new Set(),
-        intensity: "leve",
+        intensity: "",
         description: "",
       });
     } catch (error) {
@@ -229,7 +229,7 @@ export default function AlertaClimaPage() {
     viento: "💨 Vientos fuertes",
     inundacion: "🌊 Inundaciones",
     nublado: "☁️ Nublado",
-    despejado: "☀️ Despejado",
+    despejado: "☀️ Despejado/Soleado",
   };
 
   function getTimeSince(firebaseTimestamp: Timestamp | null): string {
@@ -399,7 +399,7 @@ export default function AlertaClimaPage() {
                   name="intensity"
                   value={formState.intensity}
                   onChange={handleInputChange}
-                  placeholder="Ej: moderada"
+                  placeholder="Ej: Fuerte"
                   className="p-3 w-full text-black bg-white rounded-lg border-2 border-gray-200 transition focus:ring-2 focus:ring-indigo-400 focus:border-transparent"
                 />
               </div>
@@ -468,12 +468,12 @@ export default function AlertaClimaPage() {
                       {(report.conditions || []).map((c) => (
                         <span
                           key={c}
-                          className="px-2 py-1 text-xs text-black bg-indigo-500 rounded-full"
+                          className="px-2 py-1 text-xs text-white bg-indigo-900 rounded-full"
                         >
                           {conditionEmojis[c]}
                         </span>
                       ))}
-                      <span className="px-2 py-1 text-xs text-white bg-red-500 rounded-full">
+                      <span className="px-2 py-1 text-xs text-white bg-cyan-700 rounded-full">
                         Intensidad: {report.intensity}
                       </span>
                     </div>
