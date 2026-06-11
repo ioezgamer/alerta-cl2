@@ -86,6 +86,7 @@ export function Dashboard({
             <a href="#comunidades" className="hover:text-cyan-700">Comunidades</a>
             <a href="#clima" className="hover:text-cyan-700">Clima</a>
             <a href="#seguridad" className="hover:text-cyan-700">Seguridad</a>
+            <a href="/admin" className="border-l border-slate-200 pl-4 text-cyan-600 hover:text-cyan-800">Panel Admin</a>
           </nav>
           <a
             href="https://facebook.com/AlertaCL2"

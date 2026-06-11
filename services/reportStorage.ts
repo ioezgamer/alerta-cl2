@@ -1,7 +1,18 @@
-import { appendFile, mkdir, readFile } from "node:fs/promises";
+import { appendFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { getStore } from "@netlify/blobs";
 import type { CitizenReport } from "@/types/weather";
+import { db } from "@/lib/firebase";
+import {
+  collection,
+  doc,
+  getDocs,
+  setDoc,
+  updateDoc,
+  deleteDoc,
+  query,
+  orderBy,
+} from "firebase/firestore";
 
 export const reportsFilePath = join(process.cwd(), "storage", "reports.jsonl");
 const reportsBlobKey = "reports.json";
@@ -24,11 +35,120 @@ export async function ensureReportsDirectory() {
 }
 
 export async function readStoredReports(): Promise<CitizenReport[]> {
+  if (db) {
+    try {
+      const q = query(collection(db, "reports"), orderBy("dateTime", "desc"));
+      const snapshot = await getDocs(q);
+      const reports: CitizenReport[] = [];
+      snapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        reports.push({
+          id: docSnap.id,
+          community: data.community,
+          type: data.type,
+          description: data.description,
+          dateTime: data.dateTime || data.createdAt,
+          verificationStatus: data.verificationStatus,
+          reporterName: data.reporterName || undefined,
+          perceivedLevel: data.perceivedLevel || undefined,
+          source: data.source || "web",
+        });
+      });
+      return reports;
+    } catch (error) {
+      console.error("Error reading from Firestore, falling back to local storage:", error);
+    }
+  }
+
   if (shouldUseNetlifyBlobs()) {
     const reports = await readBlobReports();
     return sortReports(reports);
   }
 
+  return readLocalReports();
+}
+
+export async function saveStoredReport(report: StoredReport) {
+  const citizenReport = toCitizenReport(report);
+
+  if (db) {
+    try {
+      const docRef = doc(db, "reports", report.id);
+      await setDoc(docRef, citizenReport);
+      return;
+    } catch (error) {
+      console.error("Error writing to Firestore, falling back to local storage:", error);
+    }
+  }
+
+  if (shouldUseNetlifyBlobs()) {
+    const reports = await readBlobReports();
+    await getReportsStore().setJSON(reportsBlobKey, [citizenReport, ...reports]);
+    return;
+  }
+
+  await ensureReportsDirectory();
+  await appendFile(reportsFilePath, `${JSON.stringify(report)}\n`, "utf8");
+}
+
+export async function updateReportStatusInStorage(
+  id: string,
+  status: CitizenReport["verificationStatus"]
+) {
+  if (db) {
+    try {
+      const docRef = doc(db, "reports", id);
+      await updateDoc(docRef, { verificationStatus: status });
+      return;
+    } catch (error) {
+      console.error("Error updating Firestore document, falling back:", error);
+    }
+  }
+
+  if (shouldUseNetlifyBlobs()) {
+    const reports = await readBlobReports();
+    const updated = reports.map((r) =>
+      r.id === id ? { ...r, verificationStatus: status } : r
+    );
+    await getReportsStore().setJSON(reportsBlobKey, updated);
+    return;
+  }
+
+  const reports = await readLocalReports();
+  const updated = reports.map((r) =>
+    r.id === id ? { ...r, verificationStatus: status } : r
+  );
+  await writeAllLocalReports(updated);
+}
+
+export async function deleteReportFromStorage(id: string) {
+  if (db) {
+    try {
+      const docRef = doc(db, "reports", id);
+      await deleteDoc(docRef);
+      return;
+    } catch (error) {
+      console.error("Error deleting Firestore document, falling back:", error);
+    }
+  }
+
+  if (shouldUseNetlifyBlobs()) {
+    const reports = await readBlobReports();
+    const filtered = reports.filter((r) => r.id !== id);
+    await getReportsStore().setJSON(reportsBlobKey, filtered);
+    return;
+  }
+
+  const reports = await readLocalReports();
+  const filtered = reports.filter((r) => r.id !== id);
+  await writeAllLocalReports(filtered);
+}
+
+export function getCommunitiesFromReports(reports: CitizenReport[]) {
+  return Array.from(new Set(reports.map((report) => report.community).filter(Boolean)));
+}
+
+async function readLocalReports(): Promise<CitizenReport[]> {
   try {
     const content = await readFile(reportsFilePath, "utf8");
     return content
@@ -43,19 +163,11 @@ export async function readStoredReports(): Promise<CitizenReport[]> {
   }
 }
 
-export async function saveStoredReport(report: StoredReport) {
-  if (shouldUseNetlifyBlobs()) {
-    const reports = await readBlobReports();
-    await getReportsStore().setJSON(reportsBlobKey, [toCitizenReport(report), ...reports]);
-    return;
-  }
-
+async function writeAllLocalReports(reports: CitizenReport[]) {
   await ensureReportsDirectory();
-  await appendFile(reportsFilePath, `${JSON.stringify(report)}\n`, "utf8");
-}
-
-export function getCommunitiesFromReports(reports: CitizenReport[]) {
-  return Array.from(new Set(reports.map((report) => report.community).filter(Boolean)));
+  const stored = reports.map(toStoredReport);
+  const content = stored.map((r) => JSON.stringify(r)).join("\n") + "\n";
+  await writeFile(reportsFilePath, content, "utf8");
 }
 
 function parseStoredReport(line: string): CitizenReport | null {
@@ -90,6 +202,20 @@ function toCitizenReport(report: StoredReport): CitizenReport {
     reporterName: report.reporterName ?? undefined,
     perceivedLevel: report.perceivedLevel,
     source: report.source,
+  };
+}
+
+function toStoredReport(report: CitizenReport): StoredReport {
+  return {
+    id: report.id,
+    reporterName: report.reporterName ?? null,
+    community: report.community,
+    type: report.type,
+    description: report.description,
+    perceivedLevel: report.perceivedLevel ?? "informativa",
+    verificationStatus: report.verificationStatus,
+    createdAt: report.dateTime,
+    source: report.source ?? "web",
   };
 }
 
