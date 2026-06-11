@@ -192,17 +192,26 @@ function parseStoredReport(line: string): CitizenReport | null {
 }
 
 function toCitizenReport(report: StoredReport): CitizenReport {
-  return {
+  const citizenReport: CitizenReport = {
     id: report.id,
     community: report.community,
     type: report.type,
     description: report.description,
     dateTime: report.createdAt,
     verificationStatus: report.verificationStatus,
-    reporterName: report.reporterName ?? undefined,
-    perceivedLevel: report.perceivedLevel,
-    source: report.source,
   };
+
+  if (report.reporterName !== null && report.reporterName !== undefined) {
+    citizenReport.reporterName = report.reporterName;
+  }
+  if (report.perceivedLevel !== null && report.perceivedLevel !== undefined) {
+    citizenReport.perceivedLevel = report.perceivedLevel;
+  }
+  if (report.source !== null && report.source !== undefined) {
+    citizenReport.source = report.source;
+  }
+
+  return citizenReport;
 }
 
 function toStoredReport(report: CitizenReport): StoredReport {

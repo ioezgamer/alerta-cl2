@@ -53,12 +53,17 @@ export function ReportForm({ communityOptions, onReportCreated }: ReportFormProp
         setLocalCommunities((current) =>
           current.includes(community) ? current : [...current, community].sort((a, b) => a.localeCompare(b, "es"))
         );
-        setForm((current) => ({ ...current, community }));
-        setCommunityMode("select");
       }
       setStatus("success");
       setMessage("Reporte guardado como pendiente de verificación.");
-      setForm((current) => ({ ...current, reporterName: "", description: "" }));
+      setForm({
+        reporterName: "",
+        community: initialCommunity,
+        type: "lluvia",
+        description: "",
+        perceivedLevel: "precaucion",
+      });
+      setCommunityMode("select");
       setCustomCommunity("");
     } catch (error) {
       setStatus("error");
