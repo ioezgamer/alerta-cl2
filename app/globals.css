@@ -2,30 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  font-family: "Inter", sans-serif;
+  background: #f8fafc;
+  color: #0f172a;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.alert-card {
-  animation: fadeIn 0.5s ease-out forwards;
-}
-.loader {
-  border-top-color: #22d3ee;
-  animation: spin 1s linear infinite;
-}
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+::selection {
+  background: #bae6fd;
+  color: #0f172a;
 }
 
+:focus-visible {
+  outline: 3px solid #0891b2;
+  outline-offset: 3px;
+}

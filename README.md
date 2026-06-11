@@ -1,62 +1,80 @@
-# Alerta Clima Limon 2 (Next.js + Firebase)
+# Alerta Clima Limon 2
 
-## Requisitos
+Sitio web comunitario para consultar clima real, alertas derivadas de pronostico, reportes ciudadanos pendientes y estado por comunidad en Limon 2, Tola, Rivas, Nicaragua.
 
-- Node 18+
-- Cuenta de Firebase (Firestore habilitado)
-- Netlify CLI (opcional para probar deploy local)
+## Datos reales
 
-## Instalación
+- Clima y pronostico: Open-Meteo Forecast API.
+- Coordenadas: configuradas por comunidad en `data/locations.ts`.
+- Alertas: generadas automaticamente desde lluvia, probabilidad de lluvia, rafagas y codigos WMO devueltos por Open-Meteo.
+- Reportes ciudadanos: se reciben por `/api/reports` y quedan siempre como `pendiente`.
+- Comunidades del formulario: salen de las comunidades base y de las comunidades reportadas por usuarios.
+- Nuevas comunidades: el formulario permite seleccionar `Agregar otra comunidad`; al enviar el reporte queda disponible en la sesion y en futuras cargas desde `storage/reports.jsonl`.
+- No hay reportes, alertas ni estados comunitarios inventados.
+
+## Ejecutar
 
 ```bash
 npm install
-```
-
-## Variables de entorno
-
-Crea un archivo `.env.local` con:
-
-```
-NEXT_PUBLIC_FIREBASE_API_KEY=...
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=...
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=...
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=...
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=...
-NEXT_PUBLIC_FIREBASE_APP_ID=...
-NEXT_PUBLIC_APP_ID=default-app-id
-# Opcional si usas auth con token personalizado desde tu backend
-NEXT_PUBLIC_INITIAL_AUTH_TOKEN=
-```
-
-## Ejecutar en desarrollo
-
-```bash
 npm run dev
 ```
 
-## Build de producción
+Abre `http://localhost:3000`.
+
+## Produccion
 
 ```bash
-npm run build && npm start
+npm run build
+npm start
 ```
 
-## Despliegue en Netlify
+Requisitos:
 
-1. Conecta el repo en Netlify.
-2. Build command: `npm run build`
-3. Publish directory: `.next`
-4. Instala el plugin `@netlify/plugin-nextjs` (ya definido en `netlify.toml`).
-5. Configura las variables de entorno en Netlify (las mismas de `.env.local`).
+- Node.js 20.9+ para Next 16.
+- Permiso de escritura en `storage/` si se usa persistencia local.
+- Opcional: `REPORT_WEBHOOK_URL` para enviar reportes a un webhook externo.
+
+## Reportes ciudadanos
+
+La ruta `POST /api/reports` valida:
+
+- comunidad permitida;
+- tipo de reporte permitido;
+- nivel percibido permitido;
+- descripcion entre 12 y 800 caracteres;
+- nombre opcional hasta 80 caracteres.
+
+En VPS/Node, guarda cada reporte como JSON Lines en `storage/reports.jsonl`.
+
+En plataformas serverless como Netlify, el filesystem no debe considerarse permanente. Para produccion serverless, configura:
+
+```env
+REPORT_WEBHOOK_URL=https://tu-webhook.example/reportes
+```
+
+Ese webhook puede apuntar a un panel propio, Google Apps Script, Make/Zapier, Supabase Edge Function u otro backend.
 
 ## Estructura
 
-- `app/page.tsx`: UI principal con alertas en tiempo real y formulario.
-- `lib/firebase.ts`: Inicialización de Firebase y autenticación anónima o token.
-- `components/Icons.tsx`: Iconos por tipo de alerta.
-- `app/globals.css`: Tailwind + estilos.
+- `app/`: layout, pagina principal y API de reportes.
+- `components/`: componentes UI reutilizables.
+- `data/locations.ts`: comunidades y coordenadas reales configurables.
+- `services/openMeteoService.ts`: integracion con Open-Meteo y calculo de alertas.
+- `services/weatherService.ts`: capa de datos de la pagina y envio de reportes.
+- `services/reportStorage.ts`: lectura de reportes guardados y comunidades aprendidas.
+- `services/reportClient.ts`: envio del formulario desde el navegador.
+- `types/`: tipos del dominio comunitario.
+- `utils/`: formateo, etiquetas, opciones de reportes y clases visuales.
+- `storage/`: bandeja local de reportes pendientes; los `.jsonl` no se versionan.
 
-## Firestore
+## Seguridad
 
-Colección usada: `/artifacts/${NEXT_PUBLIC_APP_ID}/public/data/alerts`
-Documento contiene: `comunidad`, `tipo`, `detalles`, `timestamp`.
+- Los reportes ciudadanos nunca se publican como verificados automaticamente.
+- Los reportes entrantes se validan y se guardan como pendientes.
+- `npm audit` queda en 0 vulnerabilidades.
+- Next se actualizo a la linea 16 y se fuerza `postcss` parcheado con `overrides`.
 
+## Fuentes
+
+- Open-Meteo: https://open-meteo.com/
+- Documentacion Forecast API: https://open-meteo.com/en/docs

@@ -5,7 +5,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Alerta Clima Limon 2",
-  description: "Alertas comunitarias en tiempo real",
+  description:
+    "Alertas, reportes ciudadanos y clima comunitario para Limon 2, Tola, Rivas, Nicaragua.",
 };
 
 export default function RootLayout({
@@ -14,13 +15,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es" suppressHydrationWarning>
-      <body
-        suppressHydrationWarning
-        className={`${inter.className} bg-gray-900 text-white`}
-      >
-        {children}
-      </body>
+    <html lang="es-NI">
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }
