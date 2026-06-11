@@ -10,6 +10,7 @@ Sitio web comunitario para consultar clima real, alertas derivadas de pronostico
 - Reportes ciudadanos: se reciben por `/api/reports` y quedan siempre como `pendiente`.
 - Comunidades del formulario: salen de las comunidades base y de las comunidades reportadas por usuarios.
 - Nuevas comunidades: el formulario permite seleccionar `Agregar otra comunidad`; al enviar el reporte queda disponible en la sesion y en futuras cargas desde `storage/reports.jsonl`.
+- En Netlify, los reportes se guardan en Netlify Blobs, no en el filesystem temporal de la funcion.
 - No hay reportes, alertas ni estados comunitarios inventados.
 
 ## Ejecutar
@@ -31,7 +32,8 @@ npm start
 Requisitos:
 
 - Node.js 20.9+ para Next 16.
-- Permiso de escritura en `storage/` si se usa persistencia local.
+- Netlify con `@netlify/plugin-nextjs` para funciones Next y Netlify Blobs.
+- Permiso de escritura en `storage/` solo para desarrollo local fuera de Netlify.
 - Opcional: `REPORT_WEBHOOK_URL` para enviar reportes a un webhook externo.
 
 ## Reportes ciudadanos
@@ -44,9 +46,11 @@ La ruta `POST /api/reports` valida:
 - descripcion entre 12 y 800 caracteres;
 - nombre opcional hasta 80 caracteres.
 
-En VPS/Node, guarda cada reporte como JSON Lines en `storage/reports.jsonl`.
+En desarrollo local o VPS/Node, guarda cada reporte como JSON Lines en `storage/reports.jsonl`.
 
-En plataformas serverless como Netlify, el filesystem no debe considerarse permanente. Para produccion serverless, configura:
+En Netlify, guarda los reportes en un store site-scoped de Netlify Blobs llamado `alerta-clima-reports`.
+
+Opcionalmente tambien puedes configurar:
 
 ```env
 REPORT_WEBHOOK_URL=https://tu-webhook.example/reportes

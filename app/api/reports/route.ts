@@ -1,8 +1,6 @@
-import { appendFile, mkdir } from "node:fs/promises";
-import { dirname } from "node:path";
 import { NextResponse } from "next/server";
 import type { AlertLevel, ReportFormPayload, ReportType } from "@/types/weather";
-import { reportsFilePath } from "@/services/reportStorage";
+import { saveStoredReport, type StoredReport } from "@/services/reportStorage";
 import { alertLevels, reportTypes } from "@/utils/reportOptions";
 
 export const runtime = "nodejs";
@@ -26,7 +24,7 @@ export async function POST(request: Request) {
   }
 
   const createdAt = new Date().toISOString();
-  const report = {
+  const report: StoredReport = {
     id: crypto.randomUUID(),
     reporterName: payload.reporterName?.trim() || null,
     community: normalizeCommunity(payload.community),
@@ -46,7 +44,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error:
-          "No se pudo guardar el reporte. Revise permisos de storage o configure REPORT_WEBHOOK_URL.",
+          "No se pudo guardar el reporte. Revise la configuracion de almacenamiento de Netlify Blobs o REPORT_WEBHOOK_URL.",
       },
       { status: 500 }
     );
@@ -92,12 +90,11 @@ function validatePayload(payload: ReportFormPayload) {
   return null;
 }
 
-async function persistReport(report: Record<string, unknown>) {
-  await mkdir(dirname(reportsFilePath), { recursive: true });
-  await appendFile(reportsFilePath, `${JSON.stringify(report)}\n`, "utf8");
+async function persistReport(report: StoredReport) {
+  await saveStoredReport(report);
 }
 
-async function notifyWebhook(report: Record<string, unknown>) {
+async function notifyWebhook(report: StoredReport) {
   const webhookUrl = process.env.REPORT_WEBHOOK_URL;
   if (!webhookUrl) return;
 
