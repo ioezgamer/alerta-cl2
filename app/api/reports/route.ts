@@ -15,7 +15,7 @@ export async function POST(request: Request) {
   try {
     payload = (await request.json()) as ReportFormPayload;
   } catch {
-    return NextResponse.json({ error: "JSON invalido." }, { status: 400 });
+    return NextResponse.json({ error: "JSON inválido." }, { status: 400 });
   }
 
   const validationError = validatePayload(payload);
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error:
-          "No se pudo guardar el reporte. Revise la configuracion de almacenamiento de Netlify Blobs o REPORT_WEBHOOK_URL.",
+          "No se pudo guardar el reporte. Revise la configuración de almacenamiento de Netlify Blobs o REPORT_WEBHOOK_URL.",
       },
       { status: 500 }
     );
@@ -56,23 +56,23 @@ export async function POST(request: Request) {
 function validatePayload(payload: ReportFormPayload) {
   const community = normalizeCommunity(payload.community);
   if (community.length < 2) {
-    return "Escriba una comunidad valida.";
+    return "Escriba una comunidad válida.";
   }
 
   if (community.length > MAX_COMMUNITY_LENGTH) {
     return `La comunidad no debe superar ${MAX_COMMUNITY_LENGTH} caracteres.`;
   }
 
-  if (!/^[\p{L}\p{N}\s#.'-]+$/u.test(community)) {
+  if (!/^[\p{L}\p{M}\p{N}\s#.'-]+$/u.test(community)) {
     return "La comunidad contiene caracteres no permitidos.";
   }
 
   if (!reportTypes.includes(payload.type as ReportType)) {
-    return "Tipo de reporte no valido.";
+    return "Tipo de reporte no válido.";
   }
 
   if (!alertLevels.includes(payload.perceivedLevel as AlertLevel)) {
-    return "Nivel percibido no valido.";
+    return "Nivel percibido no válido.";
   }
 
   if (payload.reporterName && payload.reporterName.length > MAX_NAME_LENGTH) {
@@ -80,11 +80,11 @@ function validatePayload(payload: ReportFormPayload) {
   }
 
   if (!payload.description || payload.description.trim().length < 12) {
-    return "La descripcion debe tener al menos 12 caracteres.";
+    return "La descripción debe tener al menos 12 caracteres.";
   }
 
   if (payload.description.length > MAX_DESCRIPTION_LENGTH) {
-    return `La descripcion no debe superar ${MAX_DESCRIPTION_LENGTH} caracteres.`;
+    return `La descripción no debe superar ${MAX_DESCRIPTION_LENGTH} caracteres.`;
   }
 
   return null;

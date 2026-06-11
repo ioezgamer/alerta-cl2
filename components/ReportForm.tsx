@@ -15,7 +15,7 @@ interface ReportFormProps {
 }
 
 export function ReportForm({ communityOptions, onReportCreated }: ReportFormProps) {
-  const initialCommunity = communityOptions[0] ?? "Limon 2";
+  const initialCommunity = communityOptions[0] ?? "Limón 2";
   const [form, setForm] = useState<ReportFormPayload>({
     reporterName: "",
     community: initialCommunity,
@@ -57,7 +57,7 @@ export function ReportForm({ communityOptions, onReportCreated }: ReportFormProp
         setCommunityMode("select");
       }
       setStatus("success");
-      setMessage("Reporte guardado como pendiente de verificacion.");
+      setMessage("Reporte guardado como pendiente de verificación.");
       setForm((current) => ({ ...current, reporterName: "", description: "" }));
       setCustomCommunity("");
     } catch (error) {
@@ -79,7 +79,7 @@ export function ReportForm({ communityOptions, onReportCreated }: ReportFormProp
         <div>
           <h2 className="text-2xl font-bold text-slate-950">Enviar reporte</h2>
           <p className="mt-1 text-sm leading-6 text-slate-600">
-            El reporte queda pendiente hasta que un administrador lo revise.
+            El reporte queda en Pendiente hasta que un administrador lo revise y cambie su estado.
           </p>
         </div>
       </div>
@@ -128,7 +128,7 @@ export function ReportForm({ communityOptions, onReportCreated }: ReportFormProp
               className="rounded-lg border border-slate-300 bg-slate-50/70 px-3 py-3 text-sm font-medium text-slate-950 outline-none transition focus:border-cyan-600 focus:bg-white focus:ring-2 focus:ring-cyan-100"
               value={customCommunity}
               onChange={(event) => setCustomCommunity(event.target.value)}
-              placeholder="Ej: La Virgen, El Coyol, Nancimi..."
+            placeholder="Ej: La Virgen, El Coyol, Nancimí..."
             />
           </label>
         ) : null}
@@ -166,7 +166,7 @@ export function ReportForm({ communityOptions, onReportCreated }: ReportFormProp
         </label>
 
         <label className="grid gap-2 text-sm font-semibold text-slate-700 md:col-span-2">
-          Descripcion
+          Descripción
           <textarea
             required
             minLength={12}
@@ -174,7 +174,7 @@ export function ReportForm({ communityOptions, onReportCreated }: ReportFormProp
             className="resize-none rounded-lg border border-slate-300 bg-slate-50/70 px-3 py-3 text-sm font-medium text-slate-950 outline-none transition focus:border-cyan-600 focus:bg-white focus:ring-2 focus:ring-cyan-100"
             value={form.description}
             onChange={(event) => setForm({ ...form, description: event.target.value })}
-            placeholder="Describe lo que esta pasando, punto de referencia y si el paso esta seguro."
+            placeholder="Describe lo que está pasando, punto de referencia y si el paso está seguro."
           />
         </label>
 

@@ -4,9 +4,9 @@ import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Alerta Clima Limon 2",
+  title: "Alerta Clima Limón 2",
   description:
-    "Alertas, reportes ciudadanos y clima comunitario para Limon 2, Tola, Rivas, Nicaragua.",
+    "Alertas, reportes ciudadanos y clima comunitario para Limón 2, Tola, Rivas, Nicaragua.",
 };
 
 export default function RootLayout({

@@ -174,7 +174,7 @@ function toWeatherSnapshot(weather: CommunityWeather): WeatherSnapshot {
     attributionUrl: "https://open-meteo.com/",
     details: [
       `Lluvia registrada ahora: ${weather.precipitationMm} mm.`,
-      `Probabilidad maxima de lluvia en las proximas 6 horas: ${weather.nextRainChance}%.`,
+      `Probabilidad máxima de lluvia en las próximas 6 horas: ${weather.nextRainChance}%.`,
       `Rafagas estimadas: ${weather.gustKph} km/h.`,
     ],
   };
@@ -207,7 +207,7 @@ function buildForecastAlerts(weatherByCommunity: CommunityWeather[]): AlertItem[
           : level === "alerta"
             ? `Lluvia o tormenta probable en ${weather.name}`
             : level === "precaucion"
-              ? `Precaucion por lluvia en ${weather.name}`
+              ? `Precaución por lluvia en ${weather.name}`
               : `Seguimiento del clima en ${weather.name}`;
 
       return {
@@ -219,7 +219,7 @@ function buildForecastAlerts(weatherByCommunity: CommunityWeather[]): AlertItem[
         dateTime: weather.currentTime,
         status: "activa",
         source: "pronostico",
-        evidence: `Open-Meteo: ${weather.precipitationMm} mm ahora, ${weather.nextRainChance}% de lluvia en 6 horas, rafagas ${weather.gustKph} km/h.`,
+        evidence: `Open-Meteo: ${weather.precipitationMm} mm ahora, ${weather.nextRainChance}% de lluvia en 6 horas, ráfagas ${weather.gustKph} km/h.`,
       } satisfies AlertItem;
     })
     .filter(Boolean) as AlertItem[];
@@ -279,11 +279,11 @@ function buildWeatherSummary(weather: CommunityWeather) {
   const codeText = describeWeatherCode(weather.weatherCode);
 
   if (weather.precipitationMm > 0) {
-    return `${codeText} en ${weather.name}. Lluvia actual de ${weather.precipitationMm} mm y probabilidad de ${weather.nextRainChance}% durante las proximas horas.`;
+    return `${codeText} en ${weather.name}. Lluvia actual de ${weather.precipitationMm} mm y probabilidad de ${weather.nextRainChance}% durante las próximas horas.`;
   }
 
   if (weather.nextRainChance >= 45) {
-    return `${codeText} en ${weather.name}. Puede llover en las proximas horas; probabilidad maxima ${weather.nextRainChance}%.`;
+    return `${codeText} en ${weather.name}. Puede llover en las próximas horas; probabilidad máxima ${weather.nextRainChance}%.`;
   }
 
   return `${codeText} en ${weather.name}. Sin lluvia registrada ahora; mantener seguimiento si cambia la nubosidad.`;
@@ -291,10 +291,10 @@ function buildWeatherSummary(weather: CommunityWeather) {
 
 function buildCommunitySourceText(weather: CommunityWeather, status: CommunityStatus) {
   if (status === "sin reportes") {
-    return `Sin reportes ciudadanos conectados. Pronostico real: ${weather.nextRainChance}% de lluvia en las proximas 6 horas.`;
+    return `Sin reportes ciudadanos conectados. Pronóstico real: ${weather.nextRainChance}% de lluvia en las próximas 6 horas.`;
   }
 
-  return `Pronostico real: ${weather.precipitationMm} mm de lluvia ahora y ${weather.nextRainChance}% de probabilidad en las proximas 6 horas.`;
+  return `Pronóstico real: ${weather.precipitationMm} mm de lluvia ahora y ${weather.nextRainChance}% de probabilidad en las próximas 6 horas.`;
 }
 
 function describeWeatherCode(code: number) {
@@ -305,7 +305,7 @@ function describeWeatherCode(code: number) {
   if ([61, 63, 65, 66, 67].includes(code)) return "Lluvia";
   if ([80, 81, 82].includes(code)) return "Chubascos";
   if ([95, 96, 99].includes(code)) return "Tormenta";
-  return "Condicion meteorologica variable";
+  return "Condición meteorológica variable";
 }
 
 function isThunderstorm(code: number) {

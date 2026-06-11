@@ -26,7 +26,7 @@ export async function getCommunityDashboard() {
         name: community.name,
         status: "sin reportes" as const,
         lastReport:
-          "No se pudo consultar la fuente meteorologica en este momento. Intente actualizar la pagina.",
+          "No se pudo consultar la fuente meteorológica en este momento. Intente actualizar la página.",
         riskLevel: "bajo" as const,
         updatedAt: new Date().toISOString(),
         source: "sin datos" as const,
@@ -34,18 +34,18 @@ export async function getCommunityDashboard() {
       weather: {
         condition: "despejado" as const,
         summary:
-          "La fuente meteorologica no esta disponible temporalmente. No se muestran valores de relleno.",
+          "La fuente meteorológica no está disponible temporalmente. No se muestran valores de relleno.",
         temperatureC: 0,
         rainChance: 0,
         windKph: 0,
         updatedAt: new Date().toISOString(),
         details: [
-          "Revise la pagina de Facebook si necesita informacion comunitaria urgente.",
+          "Revise la página de Facebook si necesita información comunitaria urgente.",
           "La web volvera a consultar Open-Meteo al recargar.",
           "No hay datos inventados en esta vista.",
         ],
         source: "Sin fuente disponible",
-        locationName: "Limon 2",
+        locationName: "Limón 2",
         attributionUrl: "https://open-meteo.com/",
       },
       communityOptions: mergeCommunities(getCommunitiesFromReports(reports)),

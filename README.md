@@ -1,16 +1,16 @@
-# Alerta Clima Limon 2
+# Alerta Clima Limón 2
 
-Sitio web comunitario para consultar clima real, alertas derivadas de pronostico, reportes ciudadanos pendientes y estado por comunidad en Limon 2, Tola, Rivas, Nicaragua.
+Sitio web comunitario para consultar clima real, alertas derivadas de pronóstico, reportes ciudadanos pendientes y estado por comunidad en Limón 2, Tola, Rivas, Nicaragua.
 
 ## Datos reales
 
-- Clima y pronostico: Open-Meteo Forecast API.
+- Clima y pronóstico: Open-Meteo Forecast API.
 - Coordenadas: configuradas por comunidad en `data/locations.ts`.
-- Alertas: generadas automaticamente desde lluvia, probabilidad de lluvia, rafagas y codigos WMO devueltos por Open-Meteo.
+- Alertas: generadas automáticamente desde lluvia, probabilidad de lluvia, ráfagas y códigos WMO devueltos por Open-Meteo.
 - Reportes ciudadanos: se reciben por `/api/reports` y quedan siempre como `pendiente`.
 - Comunidades del formulario: salen de las comunidades base y de las comunidades reportadas por usuarios.
-- Nuevas comunidades: el formulario permite seleccionar `Agregar otra comunidad`; al enviar el reporte queda disponible en la sesion y en futuras cargas desde `storage/reports.jsonl`.
-- En Netlify, los reportes se guardan en Netlify Blobs, no en el filesystem temporal de la funcion.
+- Nuevas comunidades: el formulario permite seleccionar `Agregar otra comunidad`; al enviar el reporte queda disponible en la sesión y en futuras cargas desde el almacenamiento.
+- En Netlify, los reportes se guardan en Netlify Blobs, no en el filesystem temporal de la función.
 - No hay reportes, alertas ni estados comunitarios inventados.
 
 ## Ejecutar
@@ -22,7 +22,7 @@ npm run dev
 
 Abre `http://localhost:3000`.
 
-## Produccion
+## Producción
 
 ```bash
 npm run build
@@ -40,17 +40,19 @@ Requisitos:
 
 La ruta `POST /api/reports` valida:
 
-- comunidad permitida;
+- comunidad;
 - tipo de reporte permitido;
 - nivel percibido permitido;
-- descripcion entre 12 y 800 caracteres;
+- descripción entre 12 y 800 caracteres;
 - nombre opcional hasta 80 caracteres.
+
+Los reportes quedan en estado `pendiente` hasta que exista un panel o proceso administrativo que los revise y cambie a `verificado` o `descartado`.
 
 En desarrollo local o VPS/Node, guarda cada reporte como JSON Lines en `storage/reports.jsonl`.
 
 En Netlify, guarda los reportes en un store site-scoped de Netlify Blobs llamado `alerta-clima-reports`.
 
-Opcionalmente tambien puedes configurar:
+Opcionalmente también puedes configurar:
 
 ```env
 REPORT_WEBHOOK_URL=https://tu-webhook.example/reportes
@@ -60,25 +62,25 @@ Ese webhook puede apuntar a un panel propio, Google Apps Script, Make/Zapier, Su
 
 ## Estructura
 
-- `app/`: layout, pagina principal y API de reportes.
+- `app/`: layout, página principal y API de reportes.
 - `components/`: componentes UI reutilizables.
 - `data/locations.ts`: comunidades y coordenadas reales configurables.
-- `services/openMeteoService.ts`: integracion con Open-Meteo y calculo de alertas.
-- `services/weatherService.ts`: capa de datos de la pagina y envio de reportes.
+- `services/openMeteoService.ts`: integración con Open-Meteo y cálculo de alertas.
+- `services/weatherService.ts`: capa de datos de la página y envío de reportes.
 - `services/reportStorage.ts`: lectura de reportes guardados y comunidades aprendidas.
-- `services/reportClient.ts`: envio del formulario desde el navegador.
+- `services/reportClient.ts`: envío del formulario desde el navegador.
 - `types/`: tipos del dominio comunitario.
 - `utils/`: formateo, etiquetas, opciones de reportes y clases visuales.
 - `storage/`: bandeja local de reportes pendientes; los `.jsonl` no se versionan.
 
 ## Seguridad
 
-- Los reportes ciudadanos nunca se publican como verificados automaticamente.
+- Los reportes ciudadanos nunca se publican como verificados automáticamente.
 - Los reportes entrantes se validan y se guardan como pendientes.
 - `npm audit` queda en 0 vulnerabilidades.
-- Next se actualizo a la linea 16 y se fuerza `postcss` parcheado con `overrides`.
+- Next se actualizó a la línea 16 y se fuerza `postcss` parcheado con `overrides`.
 
 ## Fuentes
 
 - Open-Meteo: https://open-meteo.com/
-- Documentacion Forecast API: https://open-meteo.com/en/docs
+- Documentación Forecast API: https://open-meteo.com/en/docs

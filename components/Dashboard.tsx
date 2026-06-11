@@ -78,7 +78,7 @@ export function Dashboard({
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
           <a href="#inicio" className="flex items-center gap-3 font-black text-slate-950">
             <Image src="/logo.png" alt="ACL2" width={42} height={42} className="rounded-lg bg-cyan-500 ring-1 ring-cyan-100" priority />
-            <span className="leading-tight">Alerta Clima<br className="sm:hidden" /> Limon 2</span>
+            <span className="leading-tight">Alerta Clima<br className="sm:hidden" /> Limón 2</span>
           </a>
           <nav className="hidden items-center gap-5 text-sm font-semibold text-slate-600 lg:flex">
             <a href="#alertas" className="hover:text-cyan-700">Alertas</a>
@@ -104,15 +104,15 @@ export function Dashboard({
         <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[1.08fr_0.92fr] lg:px-8 lg:py-16">
           <div className="relative z-10 flex flex-col justify-center">
             <h1 className="max-w-3xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
-              Alerta Clima Limon 2
+              Alerta Clima Limón 2
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-              Alertas, reportes y clima para Limon 2 y comunidades cercanas.
+              Alertas, reportes y clima para Limón 2 y comunidades cercanas.
             </p>
             <div className="mt-7 rounded-lg border border-orange-200 border-l-4 border-l-orange-500 bg-white/85 p-4 text-orange-950 shadow-lg shadow-orange-900/5 backdrop-blur">
               <p className="text-sm font-bold uppercase tracking-wide">Estado general</p>
               <p className="mt-1 text-xl font-black">
-                {featuredAlert ? featuredAlert.title : "Sin alertas activas por pronostico"}
+                {featuredAlert ? featuredAlert.title : "Sin alertas activas por pronóstico"}
               </p>
               <p className="mt-2 text-sm leading-6">
                 {featuredAlert
@@ -211,7 +211,7 @@ export function Dashboard({
         <section id="alertas">
           <SectionHeader
             title="Alertas activas"
-            description="Cada alerta indica nivel, comunidad, estado y fuente para distinguir reportes comunitarios, pronosticos y avisos administrados."
+            description="Cada alerta indica nivel, comunidad, estado y fuente para distinguir reportes comunitarios, pronósticos y avisos administrados."
           />
           <div className="grid gap-4 lg:grid-cols-2">
             {filteredAlerts.length > 0 ? (
@@ -230,7 +230,7 @@ export function Dashboard({
         <section id="reportes">
           <SectionHeader
             title="Reportes recientes"
-            description="Los reportes ciudadanos no se publican como verificados automaticamente. Primero quedan pendientes de revision."
+            description="Los reportes ciudadanos no se publican como verificados automáticamente. Quedan en Pendiente hasta que un administrador los revise y cambie su estado."
           />
           <div className="grid gap-4 lg:grid-cols-2">
             {filteredReports.length > 0 ? (
@@ -239,8 +239,8 @@ export function Dashboard({
               ))
             ) : (
               <EmptyState
-                title="Todavia no hay reportes ciudadanos publicados"
-                description="Los reportes enviados por la web se guardan como pendientes. Publicarlos requiere un panel o proceso de verificacion."
+                title="Todavía no hay reportes ciudadanos publicados"
+                description="Los reportes enviados por la web se guardan como pendientes. Publicarlos requiere un panel o proceso de verificación."
               />
             )}
           </div>
@@ -249,7 +249,7 @@ export function Dashboard({
         <section id="comunidades">
           <SectionHeader
             title="Estado por comunidad"
-            description="Vista rapida para Limon 2, Astillero, Las Lajas, El Higueral, Rancho Santana y zonas cercanas."
+            description="Vista rápida para Limón 2, Astillero, Las Lajas, El Higueral, Rancho Santana y zonas cercanas."
           />
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {communityStates.map((community) => (
@@ -278,13 +278,13 @@ export function Dashboard({
               <div>
                 <h2 className="text-2xl font-bold text-slate-950">Seguridad y confianza</h2>
                 <p className="mt-2 text-sm leading-6 text-slate-600">
-                  Antes de cruzar rios, caminos con corriente o tramos con lodo, confirme con vecinos cercanos y atienda indicaciones oficiales.
+                  Antes de cruzar ríos, caminos con corriente o tramos con lodo, confirme con vecinos cercanos y atienda indicaciones oficiales.
                 </p>
               </div>
             </div>
             <div className="mt-5 space-y-3 text-sm leading-6 text-slate-700">
-              <p><strong>Como reportar:</strong> incluya comunidad, punto de referencia, tipo de afectacion y si el paso esta cerrado o transitable.</p>
-              <p><strong>Aviso:</strong> Este sitio es una herramienta comunitaria de informacion. No sustituye los comunicados oficiales de las autoridades correspondientes. Ante una emergencia, siga las indicaciones de las instituciones oficiales y organismos de respuesta.</p>
+              <p><strong>Cómo reportar:</strong> incluya comunidad, punto de referencia, tipo de afectación y si el paso está cerrado o transitable.</p>
+              <p><strong>Aviso:</strong> Este sitio es una herramienta comunitaria de información. No sustituye los comunicados oficiales de las autoridades correspondientes. Ante una emergencia, siga las indicaciones de las instituciones oficiales y organismos de respuesta.</p>
               <a
                 href="https://facebook.com/AlertaCL2"
                 target="_blank"

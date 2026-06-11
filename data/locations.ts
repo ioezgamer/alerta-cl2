@@ -10,10 +10,10 @@ export interface CommunityLocation {
 export const communityLocations: CommunityLocation[] = [
   {
     id: "limon-2",
-    name: "Limon 2",
+    name: "Limón 2",
     latitude: 11.45789,
     longitude: -86.07781,
-    sourceLabel: "Coordenadas de El Limon, Tola",
+    sourceLabel: "Coordenadas de El Limón, Tola",
     sourceUrl: "https://mapcarta.com/es/19585004",
   },
   {
@@ -45,7 +45,7 @@ export const communityLocations: CommunityLocation[] = [
     name: "Rancho Santana",
     latitude: 11.45753,
     longitude: -86.07716,
-    sourceLabel: "Zona Comarca Limon #1 / El Limon",
+    sourceLabel: "Zona Comarca Limón #1 / El Limón",
     sourceUrl: "https://ranchosantana.com/",
   },
 ];

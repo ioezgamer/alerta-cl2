@@ -9,7 +9,7 @@ import type {
 
 export const alertLevelLabels: Record<AlertLevel, string> = {
   informativa: "Informativa",
-  precaucion: "Precaucion",
+  precaucion: "Precaución",
   alerta: "Alerta",
   emergencia: "Emergencia",
 };
@@ -23,8 +23,8 @@ export const alertStatusLabels: Record<AlertStatus, string> = {
 export const alertSourceLabels: Record<AlertSource, string> = {
   comunidad: "Comunidad",
   administrador: "Administrador",
-  pronostico: "Pronostico",
-  institucion: "Institucion",
+  pronostico: "Pronóstico",
+  institucion: "Institución",
 };
 
 export const verificationLabels: Record<VerificationStatus, string> = {
@@ -37,8 +37,8 @@ export const communityStatusLabels: Record<CommunityStatus, string> = {
   "sin reportes": "Sin reportes",
   "lluvia leve": "Lluvia leve",
   "lluvia fuerte": "Lluvia fuerte",
-  "afectacion vial": "Afectacion vial",
-  inundacion: "Inundacion",
+  "afectacion vial": "Afectación vial",
+  inundacion: "Inundación",
   emergencia: "Emergencia",
 };
 
@@ -46,7 +46,7 @@ export const riskLabels: Record<RiskLevel, string> = {
   bajo: "Bajo",
   medio: "Medio",
   alto: "Alto",
-  critico: "Critico",
+  critico: "Crítico",
 };
 
 export function formatDateTime(value: string) {
