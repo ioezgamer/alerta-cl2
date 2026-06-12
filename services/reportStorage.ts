@@ -36,28 +36,24 @@ export async function ensureReportsDirectory() {
 
 export async function readStoredReports(): Promise<CitizenReport[]> {
   if (db) {
-    try {
-      const q = query(collection(db, "reports"), orderBy("dateTime", "desc"));
-      const snapshot = await getDocs(q);
-      const reports: CitizenReport[] = [];
-      snapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        reports.push({
-          id: docSnap.id,
-          community: data.community,
-          type: data.type,
-          description: data.description,
-          dateTime: data.dateTime || data.createdAt,
-          verificationStatus: data.verificationStatus,
-          reporterName: data.reporterName || undefined,
-          perceivedLevel: data.perceivedLevel || undefined,
-          source: data.source || "web",
-        });
+    const q = query(collection(db, "reports"), orderBy("dateTime", "desc"));
+    const snapshot = await getDocs(q);
+    const reports: CitizenReport[] = [];
+    snapshot.forEach((docSnap) => {
+      const data = docSnap.data();
+      reports.push({
+        id: docSnap.id,
+        community: data.community,
+        type: data.type,
+        description: data.description,
+        dateTime: data.dateTime || data.createdAt,
+        verificationStatus: data.verificationStatus,
+        reporterName: data.reporterName || undefined,
+        perceivedLevel: data.perceivedLevel || undefined,
+        source: data.source || "web",
       });
-      return reports;
-    } catch (error) {
-      console.error("Error reading from Firestore, falling back to local storage:", error);
-    }
+    });
+    return reports;
   }
 
   if (shouldUseNetlifyBlobs()) {
@@ -72,13 +68,9 @@ export async function saveStoredReport(report: StoredReport) {
   const citizenReport = toCitizenReport(report);
 
   if (db) {
-    try {
-      const docRef = doc(db, "reports", report.id);
-      await setDoc(docRef, citizenReport);
-      return;
-    } catch (error) {
-      console.error("Error writing to Firestore, falling back to local storage:", error);
-    }
+    const docRef = doc(db, "reports", report.id);
+    await setDoc(docRef, citizenReport);
+    return;
   }
 
   if (shouldUseNetlifyBlobs()) {
@@ -96,13 +88,9 @@ export async function updateReportStatusInStorage(
   status: CitizenReport["verificationStatus"]
 ) {
   if (db) {
-    try {
-      const docRef = doc(db, "reports", id);
-      await updateDoc(docRef, { verificationStatus: status });
-      return;
-    } catch (error) {
-      console.error("Error updating Firestore document, falling back:", error);
-    }
+    const docRef = doc(db, "reports", id);
+    await updateDoc(docRef, { verificationStatus: status });
+    return;
   }
 
   if (shouldUseNetlifyBlobs()) {
@@ -123,13 +111,9 @@ export async function updateReportStatusInStorage(
 
 export async function deleteReportFromStorage(id: string) {
   if (db) {
-    try {
-      const docRef = doc(db, "reports", id);
-      await deleteDoc(docRef);
-      return;
-    } catch (error) {
-      console.error("Error deleting Firestore document, falling back:", error);
-    }
+    const docRef = doc(db, "reports", id);
+    await deleteDoc(docRef);
+    return;
   }
 
   if (shouldUseNetlifyBlobs()) {

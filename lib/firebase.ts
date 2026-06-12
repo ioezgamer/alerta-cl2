@@ -1,4 +1,5 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -10,22 +11,22 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Check if projectId is available to prevent initialization errors in environments
-// where Firebase is not configured (maintaining the local fallback).
 const isFirebaseConfigured = Boolean(
-  process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID && 
+  process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID &&
   process.env.NEXT_PUBLIC_FIREBASE_API_KEY
 );
 
 let db: ReturnType<typeof getFirestore> | null = null;
+let auth: ReturnType<typeof getAuth> | null = null;
 
 if (isFirebaseConfigured) {
   try {
     const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
     db = getFirestore(app);
+    auth = getAuth(app);
   } catch (error) {
-    console.error("Failed to initialize Firebase:", error);
+    console.error("No se pudo inicializar Firebase:", error);
   }
 }
 
-export { db };
+export { auth, db, isFirebaseConfigured };

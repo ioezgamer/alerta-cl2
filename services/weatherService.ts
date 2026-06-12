@@ -1,22 +1,27 @@
 import { communityLocations, communityNames } from "@/data/locations";
+import { readManagedCommunities } from "./communityStorage";
 import { getCommunitiesFromReports, readStoredReports } from "./reportStorage";
 import { getRealWeatherDashboard } from "./openMeteoService";
 
 export async function getCommunityDashboard() {
+  const [reports, managedCommunities] = await Promise.all([
+    readReportsSafely(),
+    readCommunitiesSafely(),
+  ]);
+
   try {
-    const [weatherDashboard, reports] = await Promise.all([
-      getRealWeatherDashboard(),
-      readStoredReports(),
-    ]);
+    const weatherDashboard = await getRealWeatherDashboard();
 
     return {
       ...weatherDashboard,
       reports,
-      communityOptions: mergeCommunities(getCommunitiesFromReports(reports)),
+      communityOptions: mergeCommunities([
+        ...managedCommunities.map((community) => community.name),
+        ...getCommunitiesFromReports(reports),
+      ]),
     };
   } catch (error) {
     console.error(error);
-    const reports = await readStoredReports();
 
     return {
       alerts: [],
@@ -48,13 +53,34 @@ export async function getCommunityDashboard() {
         locationName: "Limón 2",
         attributionUrl: "https://open-meteo.com/",
       },
-      communityOptions: mergeCommunities(getCommunitiesFromReports(reports)),
+      communityOptions: mergeCommunities([
+        ...managedCommunities.map((community) => community.name),
+        ...getCommunitiesFromReports(reports),
+      ]),
     };
   }
 }
 
-function mergeCommunities(reportCommunities: string[]) {
-  return Array.from(new Set([...communityNames, ...reportCommunities])).sort((a, b) =>
+async function readReportsSafely() {
+  try {
+    return await readStoredReports();
+  } catch (error) {
+    console.error("No se pudieron leer los reportes:", error);
+    return [];
+  }
+}
+
+async function readCommunitiesSafely() {
+  try {
+    return await readManagedCommunities();
+  } catch (error) {
+    console.error("No se pudieron leer las comunidades administradas:", error);
+    return [];
+  }
+}
+
+function mergeCommunities(extraCommunities: string[]) {
+  return Array.from(new Set([...communityNames, ...extraCommunities])).sort((a, b) =>
     a.localeCompare(b, "es")
   );
 }
